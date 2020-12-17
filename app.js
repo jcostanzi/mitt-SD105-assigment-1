@@ -22,9 +22,10 @@ class UI {
   }
 
   static generateStopRows(stops) {
-    stops.forEach(stop => {
+    const promises = [];
 
-      fetch(`${winnipegTransitApiBaseUrl}${scheduleApiUrl.replace('{stopKey}', stop.key)}?max-results-per-route=2&api-key=${winnipegTransitApiKey}`)
+    stops.forEach(stop => {
+      promises.push(fetch(`${winnipegTransitApiBaseUrl}${scheduleApiUrl.replace('{stopKey}', stop.key)}?max-results-per-route=2&api-key=${winnipegTransitApiKey}`)
         .then(response => {
           console.log(response);
           if (response.status == 200) {
@@ -32,13 +33,19 @@ class UI {
           } else {
             Promise.reject(response.statusText);
           }
-        })
-        .then(data => {
+        }));
+    });
+
+    Promise.all(promises)
+      .then(data => {
+        data.forEach(schedule => {
+          const stop = schedule['stop-schedule'].stop;
+          const route = schedule['stop-schedule']['route-schedules'][0];
 
           displayStreetName.textContent = `Displaying results for ${stop.street.name}`;
 
-          const routeNumber = data['stop-schedule']['route-schedules'][0].route.number;
-          let times = data['stop-schedule']['route-schedules'][0]['scheduled-stops'][0].times;
+          const routeNumber = route.route.number;
+          let times = route['scheduled-stops'][0].times;
           let nextBusTime = times.arrival ? (times.arrival.estimated ? times.arrival.scheduled : 'N/A') : 'N/A';
 
           if (nextBusTime != 'N/A') {
@@ -54,7 +61,7 @@ class UI {
                                   <td>${nextBusTime}</td>`;
 
           stopsElement.insertAdjacentElement('afterbegin', rowElement);
-        });
+        })
       });
   }
 
@@ -109,7 +116,6 @@ function search(streetName) {
 
   fetch(`${winnipegTransitApiBaseUrl}${streetsApiUrl}?name=${streetName}&usage=long&api-key=${winnipegTransitApiKey}`)
     .then(response => {
-      console.log(response);
       if (response.status == 200) {
         return response.json();
       } else {

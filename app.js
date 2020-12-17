@@ -11,8 +11,19 @@ const stopsElement = document.querySelector('main table tbody');
 
 class UI {
   static generateStreetLinks(streets) {
+
+    if (streets.length == 0) {
+      const noResultsElement = document.createElement('div');
+      noResultsElement.classList.add('no-results')
+      noResultsElement.textContent = 'No Streets found';
+
+      streetsElement.appendChild(noResultsElement);
+
+      return;
+    }
+
     streets.forEach(street => {
-      const linkElement = document.createElement("a");
+      const linkElement = document.createElement('a');
       linkElement.innerHTML = `<a href="#" data-street-key="${street.key}">${street.name}</a>`;
 
       UI.addStreetLinkEventListener(linkElement);
@@ -52,7 +63,7 @@ class UI {
             nextBusTime = moment(nextBusTime).format('hh:mm A');
           }
 
-          const rowElement = document.createElement("tr");
+          const rowElement = document.createElement('tr');
 
           rowElement.innerHTML = `<td>${stop.street.name}</td>
                                   <td>${stop['cross-street'].name}</td>

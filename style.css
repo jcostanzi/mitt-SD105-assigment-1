@@ -6,7 +6,7 @@ body, html {
   height: 100%;
 }
 
-body {  
+body {
   display: grid;
   grid-template-columns: 1fr 3fr;
   font-family: Arial, Helvetica, sans-serif;
@@ -26,7 +26,7 @@ aside {
 }
 
 main {
-  background-color: #f6f7fb;  
+  background-color: #f6f7fb;
 }
 
 .titlebar {
@@ -43,7 +43,7 @@ input {
   border-radius: 5px;
   border: 0;
   width: 100%;
-  position: relative;    
+  position: relative;
 }
 
 input:before {
@@ -92,3 +92,6 @@ tbody tr:first-child td  {
   font-weight: 700;
 }
 
+.no-results {
+  margin: 10px;
+}

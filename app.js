@@ -2,6 +2,7 @@ const winnipegTransitApiKey = 'X3DdbTvDFRgZYJp__fkc';
 const winnipegTransitApiBaseUrl = 'https://api.winnipegtransit.com/v3';
 const streetsApiUrl = '/streets.json';
 const stopsApiUrl = '/stops.json';
+const scheduleApiUrl = '/stops/{stopKey}/schedule.json';
 
 const searchElement = document.querySelector('form input');
 const streetsElement = document.querySelector('.streets');
@@ -22,16 +23,39 @@ class UI {
 
   static generateStopRows(stops) {
     stops.forEach(stop => {
-      const rowElement = document.createElement("tr");
 
-      rowElement.innerHTML = `<td>${stop.street.name}</td>
-                              <td>${stop['cross-street'].name}</td>
-                              <td>${stop.direction}</td>
-                              <td></td>
-                              <td></td>`;
+      fetch(`${winnipegTransitApiBaseUrl}${scheduleApiUrl.replace('{stopKey}', stop.key)}?max-results-per-route=2&api-key=${winnipegTransitApiKey}`)
+        .then(response => {
+          console.log(response);
+          if (response.status == 200) {
+            return response.json();
+          } else {
+            Promise.reject(response.statusText);
+          }
+        })
+        .then(data => {
 
-      stopsElement.insertAdjacentElement('afterbegin', rowElement);
-    });
+          displayStreetName.textContent = `Displaying results for ${stop.street.name}`;
+
+          const routeNumber = data['stop-schedule']['route-schedules'][0].route.number;
+          let times = data['stop-schedule']['route-schedules'][0]['scheduled-stops'][0].times;
+          let nextBusTime = times.arrival ? (times.arrival.estimated ? times.arrival.scheduled : 'N/A') : 'N/A';
+
+          if (nextBusTime != 'N/A') {
+            nextBusTime = moment(nextBusTime).format('hh:mm A');
+          }
+
+          const rowElement = document.createElement("tr");
+
+          rowElement.innerHTML = `<td>${stop.street.name}</td>
+                                  <td>${stop['cross-street'].name}</td>
+                                  <td>${stop.direction}</td>
+                                  <td>${routeNumber}</td>
+                                  <td>${nextBusTime}</td>`;
+
+          stopsElement.insertAdjacentElement('afterbegin', rowElement);
+        });
+      });
   }
 
   static addSearchEventListener() {
@@ -53,7 +77,6 @@ class UI {
 
       fetch(`${winnipegTransitApiBaseUrl}${stopsApiUrl}?street=${streetKey}&api-key=${winnipegTransitApiKey}`)
         .then(response => {
-          console.log(response);
           if (response.status == 200) {
             return response.json();
           } else {

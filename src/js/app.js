@@ -45,7 +45,7 @@ class UI {
           }
         })
         .catch(error => {
-          alert(`Error: "${error}"`);
+          console.log(`Error: "${error}"`);
         }));
     });
 
@@ -114,7 +114,7 @@ class UI {
           UI.generateStopRows(data.stops);
         })
         .catch(error => {
-          alert(`Error: "${error}"`);
+          console.log(`Error: "${error}"`);
         });
     });
   }
@@ -147,7 +147,7 @@ function search(streetName) {
       UI.generateStreetLinks(data.streets);
     })
     .catch(error => {
-      alert(`Error: "${error}"`);
+      console.log(`Error: "${error}"`);
     });
 }
 

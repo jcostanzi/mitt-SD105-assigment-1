@@ -1,0 +1,27 @@
+{
+  "name": "sd105-assignment-1",
+  "version": "1.0.0",
+  "description": "For this assignment, you will be building a bus schedule search by making use of the [Winnipeg Transit Data API](https://api.winnipegtransit.com/). Sign-up for free access [here](https://api.winnipegtransit.com/).",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-terser": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcostanzi/mitt-SD105-assigment-1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcostanzi/mitt-SD105-assigment-1/issues"
+  },
+  "homepage": "https://github.com/jcostanzi/mitt-SD105-assigment-1#readme"
+}

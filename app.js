@@ -38,7 +38,6 @@ class UI {
     stops.forEach(stop => {
       promises.push(fetch(`${winnipegTransitApiBaseUrl}${scheduleApiUrl.replace('{stopKey}', stop.key)}?max-results-per-route=2&api-key=${winnipegTransitApiKey}`)
         .then(response => {
-          console.log(response);
           if (response.status == 200) {
             return response.json();
           } else {
@@ -54,29 +53,34 @@ class UI {
       .then(data => {
         data.forEach(schedule => {
           const stop = schedule['stop-schedule'].stop;
-          const route = schedule['stop-schedule']['route-schedules'][0];
+          const routes = schedule['stop-schedule']['route-schedules'];
 
-          if (route == undefined) { return; }
+          if (routes == undefined || routes.length == 0) { return; }
 
           displayStreetName.textContent = `Displaying results for ${stop.street.name}`;
 
-          const routeNumber = route.route.number;
-          let times = route['scheduled-stops'][0].times;
-          let nextBusTime = times.arrival ? (times.arrival.estimated ? times.arrival.scheduled : 'N/A') : 'N/A';
+          routes.forEach(route => {
 
-          if (nextBusTime != 'N/A') {
-            nextBusTime = moment(nextBusTime).format('hh:mm A');
-          }
+            const routeNumber = route.route.number;
+            let times = route['scheduled-stops'][0].times;
+            let nextBusTime = times.arrival ? (times.arrival.estimated ? times.arrival.scheduled : null) : null;
 
-          const rowElement = document.createElement('tr');
+            if (nextBusTime != null) {
+              nextBusTime = moment(nextBusTime).format('hh:mm A');
+            } else {
+              nextBusTime = 'N/A';
+            }
 
-          rowElement.innerHTML = `<td>${stop.street.name}</td>
-                                  <td>${stop['cross-street'].name}</td>
-                                  <td>${stop.direction}</td>
-                                  <td>${routeNumber}</td>
-                                  <td>${nextBusTime}</td>`;
+            const rowElement = document.createElement('tr');
 
-          stopsElement.insertAdjacentElement('afterbegin', rowElement);
+            rowElement.innerHTML = `<td>${stop.street.name}</td>
+                                    <td>${stop['cross-street'].name}</td>
+                                    <td>${stop.direction}</td>
+                                    <td>${routeNumber}</td>
+                                    <td>${nextBusTime}</td>`;
+
+            stopsElement.insertAdjacentElement('afterbegin', rowElement);
+          });
         })
       });
   }

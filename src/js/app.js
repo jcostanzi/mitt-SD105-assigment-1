@@ -156,7 +156,7 @@ function initialize() {
   UI.addSearchEventListener();
 
   // Only for testing porpuses
-  search('kenaston');
+  // search('kenaston');
 }
 
 initialize();

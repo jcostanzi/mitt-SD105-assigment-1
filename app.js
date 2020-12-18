@@ -44,6 +44,9 @@ class UI {
           } else {
             Promise.reject(response.statusText);
           }
+        })
+        .catch(error => {
+          alert(`Error: "${error}"`);
         }));
     });
 
@@ -52,6 +55,8 @@ class UI {
         data.forEach(schedule => {
           const stop = schedule['stop-schedule'].stop;
           const route = schedule['stop-schedule']['route-schedules'][0];
+
+          if (route == undefined) { return; }
 
           displayStreetName.textContent = `Displaying results for ${stop.street.name}`;
 
@@ -103,6 +108,9 @@ class UI {
         })
         .then(data => {
           UI.generateStopRows(data.stops);
+        })
+        .catch(error => {
+          alert(`Error: "${error}"`);
         });
     });
   }
@@ -119,9 +127,7 @@ class UI {
 }
 
 function search(streetName) {
-  if (streetName == '') {
-    return;
-  }
+  if (streetName == '') { return; }
 
   UI.cleanAllDataContainers();
 
@@ -135,6 +141,9 @@ function search(streetName) {
     })
     .then(data => {
       UI.generateStreetLinks(data.streets);
+    })
+    .catch(error => {
+      alert(`Error: "${error}"`);
     });
 }
 
